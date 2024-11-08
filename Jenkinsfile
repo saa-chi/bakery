@@ -15,11 +15,20 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 script {
-                    sh '''
-                        python -m venv venv
-                        . venv/bin/activate
-                        pip install -r requirements.txt
-                    '''
+                    // Use conditional logic to handle different OS environments
+                    if (isUnix()) {
+                        sh '''
+                            python -m venv venv
+                            . venv/bin/activate
+                            pip install -r requirements.txt
+                        '''
+                    } else {
+                        bat '''
+                            python -m venv venv
+                            call venv\\Scripts\\activate
+                            pip install -r requirements.txt
+                        '''
+                    }
                 }
             }
         }
@@ -27,10 +36,17 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh '''
-                        . venv/bin/activate
-                        pytest
-                    '''
+                    if (isUnix()) {
+                        sh '''
+                            . venv/bin/activate
+                            pytest
+                        '''
+                    } else {
+                        bat '''
+                            call venv\\Scripts\\activate
+                            pytest
+                        '''
+                    }
                 }
             }
         }
@@ -41,10 +57,17 @@ pipeline {
             }
             steps {
                 script {
-                    sh '''
-                        echo "Deploying application..."
-                        # Add your deployment commands here
-                    '''
+                    if (isUnix()) {
+                        sh '''
+                            echo "Deploying application..."
+                            # Add your deployment commands here
+                        '''
+                    } else {
+                        bat '''
+                            echo Deploying application...
+                            REM Add your deployment commands here
+                        '''
+                    }
                 }
             }
         }
