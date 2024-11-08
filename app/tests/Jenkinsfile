@@ -27,9 +27,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh 
-                        'pytest test_app.py'
-                    
+                    sh 'pytest test_app.py'  // Fixed missing quotes here
                 }
             }
         }
